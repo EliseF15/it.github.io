@@ -20,7 +20,7 @@
      margin-bottom: 20px; 
    } 
    button, .link-button { 
-     background-color: rgb(255, 0, 0); 
+     background-color: gold; 
      color: black; 
      border: none; 
      padding: 10px 20px; 
@@ -31,7 +31,7 @@
      display: inline-block; 
    } 
    button:hover, .link-button:hover { 
-     background-color: rgb(253, 62, 62); 
+     background-color:orange; 
    } 
    input[type="number"] { 
      padding: 10px; 
@@ -149,9 +149,7 @@
    // Event listener voor de knop om een nummer te zoeken 
    document.getElementById('searchButton').addEventListener('click', () => { 
      let target = parseInt(document.getElementById('searchNumber').value); 
-     if (condition) {
-        
-     } (isNaN(target)) { 
+     if (isNaN(target)) { 
        alert('Voer een geldig nummer in om te zoeken.'); 
        return; 
      } 
