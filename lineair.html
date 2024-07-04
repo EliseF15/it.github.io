@@ -1,0 +1,130 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Random Numbers</title> 
+<style> 
+    body { 
+      background-color: grey; 
+      color: white; 
+      font-family: Arial, sans-serif; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100vh; 
+      margin: 0; 
+      text-align: center; 
+    } 
+    h1 { 
+      margin-bottom: 20px; 
+    } 
+    button { 
+      background-color: red; 
+      color: black; 
+      border: none; 
+      padding: 10px 20px; 
+      margin: 5px; 
+      cursor: pointer; 
+      font-size: 16px; 
+    } 
+    button:hover { 
+      background-color: lightred; 
+    } 
+    input[type="number"] { 
+      padding: 10px; 
+      margin: 5px; 
+      font-size: 16px; 
+    } 
+    #result, #searchResult { 
+      margin-top: 20px; 
+      width: 80%; 
+      text-align: center; 
+      word-wrap: break-word; 
+    } 
+    a { 
+      background-color: red; 
+      color: black; 
+      text-decoration: none; 
+      padding: 10px 20px; 
+      margin: 20px 5px 0 5px; 
+      display: inline-block; 
+      font-size: 16px; 
+    } 
+    a:hover { 
+      background-color: darkorange; 
+    } 
+</style> 
+</head> 
+<body> 
+<h1>Array met 100 Willekeurige Nummers onder de 100</h1> 
+<button id="generateButton">Genereer Nummers</button> 
+<input type="number" id="searchNumber" placeholder="Nummer om te zoeken"> 
+<button id="searchButton">Zoek Nummer</button> 
+<div id="result"></div> 
+<div id="searchResult"></div> 
+<a href="index.html">Terug naar de main page</a> 
+  
+  <script> 
+    // Functie om een willekeurig getal onder de 100 te genereren 
+    function getRandomNumber() { 
+      return Math.floor(Math.random() * 100); 
+    } 
+  
+    // Functie om een array met 100 willekeurige nummers te maken 
+    function generateRandomNumbers() { 
+      let randomNumbers = []; 
+      for (let i = 0; i < 100; i++) { 
+        randomNumbers.push(getRandomNumber()); 
+      } 
+      return randomNumbers; 
+    } 
+  
+    // Functie om lineair te zoeken naar een nummer in de array 
+    function linearSearch(array, number) { 
+      let indices = []; 
+      for (let i = 0; i < array.length; i++) { 
+        if (array[i] === number) { 
+          indices.push(i); 
+        } 
+      } 
+      return indices; 
+    } 
+  
+    // Functie om de array in de HTML weer te geven 
+    function displayRandomNumbers(numbers) { 
+      let resultDiv = document.getElementById('result'); 
+      resultDiv.textContent = numbers.join(', '); 
+    } 
+  
+    // Functie om de zoekresultaten in de HTML weer te geven 
+    function displaySearchResult(indices, number) { 
+      let searchResultDiv = document.getElementById('searchResult'); 
+      if (indices.length > 0) { 
+        searchResultDiv.textContent = `Het nummer ${number} is gevonden op de volgende plekken: ${indices.join(', ')}`; 
+      } else { 
+        searchResultDiv.textContent = `Het nummer ${number} is niet gevonden in de array.`; 
+      } 
+    } 
+  
+    // Event listener voor de knop om nummers te genereren 
+    document.getElementById('generateButton').addEventListener('click', () => { 
+      let numbers = generateRandomNumbers(); 
+      window.randomNumbers = numbers; // Sla de gegenereerde nummers op in de global scope 
+      displayRandomNumbers(numbers); 
+    }); 
+  
+    // Event listener voor de knop om een nummer te zoeken 
+    document.getElementById('searchButton').addEventListener('click', () => { 
+      let searchNumber = parseInt(document.getElementById('searchNumber').value); 
+      if (!isNaN(searchNumber)) { 
+        let indices = linearSearch(window.randomNumbers, searchNumber); 
+        displaySearchResult(indices, searchNumber); 
+      } else { 
+        alert('Voer een geldig nummer in.'); 
+      } 
+    }); 
+</script> 
+</body> 
+</html> 

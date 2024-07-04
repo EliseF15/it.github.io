@@ -1,0 +1,173 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Random Numbers</title> 
+<style> 
+   body { 
+     background-color: grey; 
+     color: white; 
+     font-family: Arial, sans-serif; 
+     display: flex; 
+     flex-direction: column; 
+     align-items: center; 
+     justify-content: center; 
+     height: 100vh; 
+     margin: 0; 
+   } 
+   h1 { 
+     margin-bottom: 20px; 
+   } 
+   button, .link-button { 
+     background-color: rgb(255, 0, 0); 
+     color: black; 
+     border: none; 
+     padding: 10px 20px; 
+     margin: 5px; 
+     cursor: pointer; 
+     font-size: 16px; 
+     text-decoration: none; 
+     display: inline-block; 
+   } 
+   button:hover, .link-button:hover { 
+     background-color: rgb(253, 62, 62); 
+   } 
+   input[type="number"] { 
+     padding: 10px; 
+     margin: 5px; 
+     font-size: 16px; 
+   } 
+   #result, #searchResult, #searchSteps { 
+     margin-top: 20px; 
+     width: 80%; 
+     text-align: center; 
+     word-wrap: break-word; 
+   } 
+</style> 
+</head> 
+<body> 
+<h1>Array met Willekeurige Nummers onder de 100</h1> 
+<input type="number" id="amountNumbers" placeholder="Aantal" min="1" max="1000"> 
+<button id="generateButton">Genereer Nummers</button> 
+<button id="sortButton">Sorteer Nummers</button> 
+<input type="number" id="searchNumber" placeholder="Zoek een nummer"> 
+<button id="searchButton">Zoek Nummer</button> 
+<div id="result"></div> 
+<div id="searchResult"></div> 
+<div id="searchSteps"></div> 
+<a href="index.html" class="link-button">Main Page</a> 
+<script> 
+   // Functie om een willekeurig getal onder de 100 te genereren 
+   function getRandomNumber() { 
+     return Math.floor(Math.random() * 100); 
+   } 
+   // Functie om een array met willekeurige nummers te maken 
+   function generateRandomNumbers(amount) { 
+     let randomNumbers = []; 
+     for (let i = 0; i < amount; i++) { 
+       randomNumbers.push(getRandomNumber()); 
+     } 
+     return randomNumbers; 
+   } 
+   // Functie om de array in de HTML weer te geven 
+   function displayRandomNumbers(numbers) { 
+     let resultDiv = document.getElementById('result'); 
+     resultDiv.textContent = numbers.join(', '); 
+   } 
+   // Bubble sort-functie 
+   function bubbleSort(array) { 
+     let len = array.length; 
+     for (let i = 0; i < len; i++) { 
+       for (let j = 0; j < len - 1 - i; j++) { 
+         if (array[j] > array[j + 1]) { 
+           let temp = array[j]; 
+           array[j] = array[j + 1]; 
+           array[j + 1] = temp; 
+         } 
+       } 
+     } 
+     return array; 
+   } 
+   // Uitgebreide binaire zoekfunctie met stap logging 
+   function binarySearchAll(array, target) { 
+     let left = 0; 
+     let right = array.length - 1; 
+     let foundIndex = -1; 
+     let steps = []; 
+     // Basis binaire zoekopdracht om een van de instanties te vinden 
+     while (left <= right) { 
+       let mid = Math.floor((left + right) / 2); 
+       steps.push(`left: ${left}, right: ${right}, mid: ${mid}`); 
+       if (array[mid] === target) { 
+         foundIndex = mid; 
+         break; 
+       } else if (array[mid] < target) { 
+         left = mid + 1; 
+       } else { 
+         right = mid - 1; 
+       } 
+     } 
+     if (foundIndex === -1) return { indices: [], steps }; // Nummer niet gevonden 
+     // Zoek naar links voor meer instanties 
+     let indices = [foundIndex]; 
+     let leftIndex = foundIndex - 1; 
+     while (leftIndex >= 0 && array[leftIndex] === target) { 
+       indices.push(leftIndex); 
+       leftIndex--; 
+     } 
+     // Zoek naar rechts voor meer instanties 
+     let rightIndex = foundIndex + 1; 
+     while (rightIndex < array.length && array[rightIndex] === target) { 
+       indices.push(rightIndex); 
+       rightIndex++; 
+     } 
+     // Sorteer de indices 
+     return { indices: indices.sort((a, b) => a - b), steps }; 
+   } 
+   // Event listener voor de knop om nummers te genereren 
+   document.getElementById('generateButton').addEventListener('click', () => { 
+     let amount = parseInt(document.getElementById('amountNumbers').value); 
+     if (isNaN(amount) || amount <= 0) { 
+       alert('Voer een geldig aantal nummers in.'); 
+       return; 
+     } 
+     let numbers = generateRandomNumbers(amount); 
+     window.randomNumbers = numbers; // Sla de gegenereerde nummers op in de global scope 
+     displayRandomNumbers(numbers); 
+   }); 
+   // Event listener voor de knop om nummers te sorteren 
+   document.getElementById('sortButton').addEventListener('click', () => { 
+     if (window.randomNumbers) { 
+       let sortedNumbers = bubbleSort(window.randomNumbers); 
+       window.randomNumbers = sortedNumbers; // Werk de global scope bij met de gesorteerde nummers 
+       displayRandomNumbers(sortedNumbers); 
+     } else { 
+       alert('Genereer eerst nummers om te sorteren.'); 
+     } 
+   }); 
+   // Event listener voor de knop om een nummer te zoeken 
+   document.getElementById('searchButton').addEventListener('click', () => { 
+     let target = parseInt(document.getElementById('searchNumber').value); 
+     if (isNaN(target)) { 
+       alert('Voer een geldig nummer in om te zoeken.'); 
+       return; 
+     } 
+     if (window.randomNumbers) { 
+       let { indices, steps } = binarySearchAll(window.randomNumbers, target); 
+       let searchResultDiv = document.getElementById('searchResult'); 
+       let searchStepsDiv = document.getElementById('searchSteps'); 
+       if (indices.length > 0) { 
+         searchResultDiv.textContent = `Nummer ${target} gevonden op posities: ${indices.join(', ')}. Aantal: ${indices.length}`; 
+         searchStepsDiv.textContent = `Stappen van binaire zoekopdracht: ${steps.join(' | ')}`; 
+       } else { 
+         searchResultDiv.textContent = `Nummer ${target} niet gevonden.`; 
+         searchStepsDiv.textContent = ''; 
+       } 
+     } else { 
+       alert('Genereer en sorteer eerst de nummers voordat je zoekt.'); 
+     } 
+   }); 
+</script> 
+</body> 
+</html>
